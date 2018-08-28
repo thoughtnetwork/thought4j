@@ -2772,9 +2772,15 @@ public class ThoughtRPCClient implements ThoughtClientInterface
    * @param hexData
    */
   @Override
-  public void submitBlock(String hexData)
+  public boolean submitBlock(String hexData)
   {
-    query("submitblock", hexData);
+    boolean retval = false;
+    String response = (String) query("submitblock", hexData);
+    if (response.contains("success"))
+    {
+      retval = true;
+    }
+    return retval;
   }
 
   @Override

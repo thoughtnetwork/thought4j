@@ -2063,11 +2063,12 @@ public interface ThoughtClientInterface
    * 
    * @param hexData
    *          The full block to submit in serialized block format as hex
+   * @return  True if the block is accepted, false otherwise.
    * 
    * @see <a href=
    *      "https://bitcoin.org/en/developer-reference#submitblock">submitblock</a>
    */
-  void submitBlock(String hexData);
+  boolean submitBlock(String hexData);
 
   /**
    * The gettransaction RPC gets detailed information about an in-wallet
