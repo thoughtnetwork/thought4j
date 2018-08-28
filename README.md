@@ -1,4 +1,4 @@
-JavaBitcoindRpcClient
+JavaThoughtd RpcClient
 =====================
 
 Java Bitcoind RPC Client is a lightweight Java bitcoin JSON-RPC client binding. It does not require any external dependencies.
