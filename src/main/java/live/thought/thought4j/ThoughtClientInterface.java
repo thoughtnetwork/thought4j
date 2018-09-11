@@ -447,6 +447,11 @@ public interface ThoughtClientInterface
     
     long height();
   }
+  
+  static interface SubmitBlockResult extends Serializable
+  {
+    
+  }
 
   static interface NetTotals extends Serializable
   {
@@ -2063,12 +2068,12 @@ public interface ThoughtClientInterface
    * 
    * @param hexData
    *          The full block to submit in serialized block format as hex
-   * @return  True if the block is accepted, false otherwise.
+   * @return  The String received from thoughtd
    * 
    * @see <a href=
    *      "https://bitcoin.org/en/developer-reference#submitblock">submitblock</a>
    */
-  boolean submitBlock(String hexData);
+  String submitBlock(String hexData);
 
   /**
    * The gettransaction RPC gets detailed information about an in-wallet
