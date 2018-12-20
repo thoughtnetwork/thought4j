@@ -1120,6 +1120,8 @@ public interface ThoughtClientInterface
     double amount();
 
     double fee();
+    
+    boolean generated();
 
     int confirmations();
 
@@ -1134,6 +1136,18 @@ public interface ThoughtClientInterface
     Date time();
 
     Date timeReceived();
+    
+    interface Details
+    {
+      String account();
+      String address();
+      String category();
+      double amount();
+      String label();
+      int vout();
+    }
+    
+    List<Details> details();
 
     String comment();
 
