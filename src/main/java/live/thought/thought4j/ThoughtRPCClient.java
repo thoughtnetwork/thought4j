@@ -54,6 +54,7 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSocketFactory;
 
+import live.thought.thought4j.ThoughtClientInterface.Transaction.Details;
 import live.thought.thought4j.util.Base64Coder;
 import live.thought.thought4j.util.CoinUtil;
 import live.thought.thought4j.util.JSON;
@@ -217,25 +218,33 @@ public class ThoughtRPCClient implements ThoughtClientInterface
   private static byte[] loadStream(InputStream in, boolean close) throws IOException
   {
     ByteArrayOutputStream o = new ByteArrayOutputStream();
-    byte[] buffer = new byte[1024];
-    for (;;)
+    try
+    { 
+      byte[] buffer = new byte[1024];
+      for (;;)
+      {
+        int nr = in.read(buffer);
+
+        if (nr == -1)
+          break;
+        if (nr == 0)
+          throw new IOException("Read timed out");
+
+        o.write(buffer, 0, nr);
+      }
+    }
+    finally
     {
-      int nr = in.read(buffer);
-
-      if (nr == -1)
-        break;
-      if (nr == 0)
-        throw new IOException("Read timed out");
-
-      o.write(buffer, 0, nr);
+      if (close)
+      {
+        in.close();
+      }
     }
     return o.toByteArray();
   }
 
   public Object loadResponse(InputStream in, Object expectedID, boolean close) throws IOException, GenericRpcException
   {
-    try
-    {
       String r = new String(loadStream(in, close), QUERY_CHARSET);
       logger.log(Level.FINE, "Thought JSON-RPC response:\n{0}", r);
       try
@@ -255,12 +264,6 @@ public class ThoughtRPCClient implements ThoughtClientInterface
       {
         throw new ThoughtRPCException("Invalid server response format (data: \"" + r + "\")");
       }
-    }
-    finally
-    {
-      if (close)
-        in.close();
-    }
   }
 
   public Object query(String method, Object... o) throws GenericRpcException
@@ -802,6 +805,47 @@ public class ThoughtRPCClient implements ThoughtClientInterface
     }
   }
 
+  private class DetailsWrapper extends MapWrapper implements Details, Serializable
+  {
+    private static final long serialVersionUID = 1L;
+    public DetailsWrapper(Map<?,?> m)
+    {
+      super(m);
+    }
+    @Override
+    public String account()
+    {
+      return mapStr(m, "account");
+    }
+    @Override
+    public String address()
+    {
+      return mapStr(m, "address");
+    }
+    @Override
+    public String category()
+    {
+      return mapStr(m, "category");
+    }
+    @Override
+    public double amount()
+    {
+      return mapDouble(m, "amount");
+    }
+    @Override
+    public String label()
+    {
+      return mapStr(m, "label");
+    }
+    @Override
+    public int vout()
+    {
+      return mapInt(m, "vout");
+    }
+    
+    
+  }
+  
   private class TransactionWrapper extends MapWrapper implements Transaction, Serializable
   {
     private static final long serialVersionUID = 1L;
@@ -839,6 +883,12 @@ public class ThoughtRPCClient implements ThoughtClientInterface
     public double fee()
     {
       return mapDouble(m, "fee");
+    }
+    
+    @Override
+    public boolean generated()
+    {
+      return mapBool(m, "generated");
     }
 
     @Override
@@ -883,6 +933,19 @@ public class ThoughtRPCClient implements ThoughtClientInterface
       return mapCTime(m, "timereceived");
     }
 
+    @Override
+    public List<Details> details()
+    {
+      List<Map<?,?>> maps = (List<Map<?,?>>) m.get("details");
+      List<Details> details = new LinkedList<Details>();
+      for (Map<?,?> m : maps)
+      {
+        Details add = new DetailsWrapper(m);
+        details.add(add);
+      }
+      return details;
+    }
+    
     @Override
     public String comment()
     {
