@@ -1661,6 +1661,18 @@ public class ThoughtRPCClient implements ThoughtClientInterface
         return mapStr("scriptPubKey");
       }
 
+      @Override
+      public boolean coinbase()
+      {
+        boolean retval = false;
+        String cb = mapStr("coinbase");
+        if (null != cb && cb.length() > 0)
+        {
+          retval = true;
+        }
+        return retval;
+      }
+
     }
 
     @Override

@@ -844,7 +844,8 @@ public interface ThoughtClientInterface
      */
     interface In extends TxInput, Serializable
     {
-
+      boolean coinbase();
+      
       Map<String, Object> scriptSig();
 
       long sequence();
