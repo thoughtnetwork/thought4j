@@ -1122,6 +1122,31 @@ public class ThoughtRPCClient implements ThoughtClientInterface
     }
   }
 
+  private class MasternodeWrapper extends MapWrapper implements Masternode, Serializable
+  {
+	  private static final long serialVersionUID = 1L;
+
+	    public MasternodeWrapper(Map<?,?> m)
+	    {
+	      super(m);
+	    }
+
+		@Override
+		public String payee() {
+			return mapStr("payee");
+		}
+
+		@Override
+		public String script() {
+			return mapStr("script");
+		}
+
+		@Override
+		public long amount() {
+			return mapLong("amount");
+		}
+  }
+  
   private class BlockTemplateWrapper extends MapWrapper implements BlockTemplate, Serializable
   {
     private static final long serialVersionUID = 1L;
@@ -1240,6 +1265,30 @@ public class ThoughtRPCClient implements ThoughtClientInterface
       return mapLong("height");
     }
     
+    @Override
+    public List<Masternode> masternode()
+    {
+      List<Map<?,?>> maps = (List<Map<?,?>>) m.get("masternode");
+      List<Masternode> masternodes = new LinkedList<Masternode>();
+      for (Map<?,?> m : maps)
+      {
+        Masternode add = new MasternodeWrapper(m);
+        masternodes.add(add);
+      }
+      return masternodes;
+    }
+    
+    @Override
+    public boolean masternode_payments_started() 
+    {
+      return mapBool("masternode_payments_started");	
+    }
+    
+    @Override
+    public boolean masternode_payments_enforced()
+    {
+    	return mapBool("masternode_payments_enforced");
+    }
   }
   
   private class BlockChainInfoMapWrapper extends MapWrapper implements BlockChainInfo, Serializable

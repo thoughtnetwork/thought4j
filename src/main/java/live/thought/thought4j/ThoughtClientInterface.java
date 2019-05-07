@@ -402,6 +402,15 @@ public interface ThoughtClientInterface
     String chain();
   }
   
+  static interface Masternode extends Serializable
+  {
+	  String payee();
+	  
+	  String script();
+	  
+	  long amount();
+  }
+  
   static interface BlockTemplate extends Serializable
   {
 
@@ -446,6 +455,12 @@ public interface ThoughtClientInterface
     String bits();
     
     long height();
+    
+    List<Masternode> masternode();
+    
+    boolean masternode_payments_started();
+    
+    boolean masternode_payments_enforced();
   }
   
   static interface SubmitBlockResult extends Serializable
