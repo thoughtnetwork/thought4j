@@ -220,22 +220,29 @@ public class ThoughtRPCClient implements ThoughtClientInterface
     ByteArrayOutputStream o = new ByteArrayOutputStream();
     try
     { 
-      byte[] buffer = new byte[1024];
-      for (;;)
+      if (null == in)
       {
-        int nr = in.read(buffer);
+        o.write("Null".getBytes());
+      }
+      else
+      {
+        byte[] buffer = new byte[1024];
+        for (;;)
+        {
+          int nr = in.read(buffer);
 
-        if (nr == -1)
-          break;
-        if (nr == 0)
-          throw new IOException("Read timed out");
+          if (nr == -1)
+            break;
+          if (nr == 0)
+            throw new IOException("Read timed out");
 
-        o.write(buffer, 0, nr);
+          o.write(buffer, 0, nr);
+        }
       }
     }
     finally
     {
-      if (close)
+      if (close && null != in)
       {
         in.close();
       }
