@@ -89,7 +89,7 @@ public class MapWrapper
 
   public static BigDecimal mapBigDecimal(Map<?, ?> m, String key)
   {
-    return new BigDecimal((String) m.get(key));
+    return new BigDecimal((double)m.get(key));
   }
 
   public static float mapFloat(Map<?, ?> m, String key)
