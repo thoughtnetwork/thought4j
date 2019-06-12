@@ -411,6 +411,17 @@ public interface ThoughtClientInterface
 	  long amount();
   }
   
+  static interface BlockTemplateTransaction extends Serializable
+  {
+    
+    String data();
+    String hash();
+    List<Long> depends();
+    long fee();
+    long sigops();
+    boolean required();
+  }
+  
   static interface BlockTemplate extends Serializable
   {
 
@@ -428,7 +439,7 @@ public interface ThoughtClientInterface
 
     String previousblockhash();
     
-    List<Transaction> transactions();
+    List<BlockTemplateTransaction> transactions();
     
     interface coinbaseaux {
       String flags();

@@ -1154,6 +1154,52 @@ public class ThoughtRPCClient implements ThoughtClientInterface
 		}
   }
   
+  private class BlockTemplateTransactionWrapper extends MapWrapper implements BlockTemplateTransaction, Serializable
+  {
+    private static final long serialVersionUID = 1L;
+    
+    public BlockTemplateTransactionWrapper(Map<?, ?> m)
+    {
+      super(m);
+    }
+
+    @Override
+    public String data()
+    {
+      return mapStr("data");
+    }
+
+    @Override
+    public String hash()
+    {
+      return mapStr("hash");
+    }
+
+    @Override
+    public List<Long> depends()
+    {
+      return (List<Long>) m.get("depends");
+    }
+
+    @Override
+    public long fee()
+    {
+      return mapLong("fee");
+    }
+
+    @Override
+    public long sigops()
+    {
+      return mapLong("sigops");
+    }
+
+    @Override
+    public boolean required()
+    {
+      return mapBool("required");
+    }
+  }
+  
   private class BlockTemplateWrapper extends MapWrapper implements BlockTemplate, Serializable
   {
     private static final long serialVersionUID = 1L;
@@ -1194,13 +1240,13 @@ public class ThoughtRPCClient implements ThoughtClientInterface
     }
 
     @Override
-    public List<Transaction> transactions()
+    public List<BlockTemplateTransaction> transactions()
     {
       List<Map<?,?>> maps = (List<Map<?,?>>) m.get("transactions");
-      List<Transaction> transactions = new LinkedList<Transaction>();
+      List<BlockTemplateTransaction> transactions = new LinkedList<BlockTemplateTransaction>();
       for (Map<?,?> m : maps)
       {
-        Transaction add = new TransactionWrapper(m);
+        BlockTemplateTransaction add = new BlockTemplateTransactionWrapper(m);
         transactions.add(add);
       }
       return transactions;
