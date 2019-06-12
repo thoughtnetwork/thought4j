@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>live.thought</groupId>
   <artifactId>thought4j</artifactId>
-  <version>0.1-SNAPSHOT</version>
+  <version>0.2-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>Thought Network Java RPC Client</name>
   <description>A lightweight Java Thought JSON RPC client binding</description>
