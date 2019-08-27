@@ -1342,6 +1342,12 @@ public class ThoughtRPCClient implements ThoughtClientInterface
     {
     	return mapBool("masternode_payments_enforced");
     }
+    
+    @Override
+    public String coinbase_payload()
+    {
+      return mapStr("coinbase_payload");
+    }
   }
   
   private class BlockChainInfoMapWrapper extends MapWrapper implements BlockChainInfo, Serializable

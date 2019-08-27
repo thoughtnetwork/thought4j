@@ -472,6 +472,8 @@ public interface ThoughtClientInterface
     boolean masternode_payments_started();
     
     boolean masternode_payments_enforced();
+    
+    String coinbase_payload();
   }
   
   static interface SubmitBlockResult extends Serializable
