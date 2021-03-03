@@ -1321,6 +1321,12 @@ public interface ThoughtClientInterface
     double amount();
 
     int confirmations();
+    
+    boolean spendable();
+    
+    boolean solvable();
+    
+    int ps_rounds();
   }
 
   /**
@@ -1586,6 +1592,36 @@ public interface ThoughtClientInterface
    *      "https://bitcoin.org/en/developer-reference#sendtoaddress">sendtoaddress</a>
    */
   String sendToAddress(String toAddress, double amount, String comment, String commentTo) throws GenericRpcException;
+  
+  /**
+   * The sendtoaddress RPC spends an amount to a given address.
+   * 
+   * @param toAddress
+   *          A P2PKH or P2SH address to which the thoughts should be sent
+   * @param amount
+   *          The amount to spent in thoughts
+   * @param comment
+   *          A locally-stored (not broadcast) comment assigned to this
+   *          transaction.
+   * @param commentTo
+   *          A locally-stored (not broadcast) comment assigned to this
+   *          transaction
+   *          
+   * @param subtractfeefromamount
+   *          The fee will be subtracted from the amount being sent
+   *          
+   * @param use_is
+   *          Send this transaction as InstantSend
+   *          
+   * @param use_ps
+   *          Send anonymized funds only
+   * 
+   * @return The TXID of the sent transaction, encoded as hex in RPC byte order
+   * 
+   * @see <a href=
+   *      "https://bitcoin.org/en/developer-reference#sendtoaddress">sendtoaddress</a>
+   */
+  String sendToAddress(String toAddress, double amount, String comment, String commentTo, boolean subtractfeefromamount, boolean use_is, boolean use_ps) throws GenericRpcException;
 
   /**
    * The signrawtransaction RPC signs a transaction in the serialized transaction
@@ -2167,4 +2203,18 @@ public interface ThoughtClientInterface
    *         [TODO] Add to https://bitcoin.org/en/developer-reference
    */
   SmartFeeResult getEstimateSmartFee(int blocks);
+  
+  /*
+   * Adding Masternode-related RPC calls
+   * 
+   */
+  static interface MasternodeOutput extends Serializable
+  {
+    public String txid();
+    
+    public int vout();
+  }
+  
+  List<MasternodeOutput> masternodeOutputs();
 }
+
