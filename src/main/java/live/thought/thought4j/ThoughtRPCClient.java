@@ -47,6 +47,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -2351,6 +2352,23 @@ public class ThoughtRPCClient implements ThoughtClientInterface
       return mapInt(m, "confirmations");
     }
 
+    public boolean spendable()
+    {
+      return mapBool(m, "spendable");
+    }
+    
+    public boolean solvable()
+    {
+      return mapBool(m, "solvable");
+    }
+    
+    @Override
+    public int ps_rounds()
+    {
+      return mapInt(m, "ps_rounds");
+    }
+
+    
     @Override
     public String toString()
     {
@@ -2454,6 +2472,12 @@ public class ThoughtRPCClient implements ThoughtClientInterface
   public String sendToAddress(String toAddress, double amount, String comment, String commentTo) throws GenericRpcException
   {
     return (String) query("sendtoaddress", toAddress, amount, comment, commentTo);
+  }
+  
+  @Override
+  public String sendToAddress(String toAddress, double amount, String comment, String commentTo, boolean subtractfeefromamount, boolean use_is, boolean use_ps) throws GenericRpcException
+  {
+    return (String) query("sendtoaddress", toAddress, amount, comment, commentTo, subtractfeefromamount, use_is, use_ps);
   }
 
   public String signRawTransaction(String hex) throws GenericRpcException
@@ -2976,5 +3000,42 @@ public class ThoughtRPCClient implements ThoughtClientInterface
   {
     return new TxOutWrapper((Map) query("gettxout", txId, vout, includemempool));
   }
+  
+  /**
+   * Adding Masternode functions
+   */
+  private class MasternodeOutputImpl implements MasternodeOutput
+  {
+    String txid;
+    int    vout;
+    
+    @Override
+    public String txid()
+    {
+      return txid;
+    }
 
+    @Override
+    public int vout()
+    {
+      return vout;
+    }
+    
+  }
+  
+  public List<MasternodeOutput> masternodeOutputs()
+  {
+    List<MasternodeOutput> retval = new ArrayList<MasternodeOutput>();
+    Map results = (Map) query("masternode", "status");
+    Set<String> keys = results.keySet();
+    for (String key : keys)
+    {
+      MasternodeOutputImpl moi = new MasternodeOutputImpl();
+      moi.txid = key;
+      moi.vout = Integer.parseInt(results.get(key).toString());
+      retval.add(moi);
+    }
+    
+    return retval;
+  }
 }
