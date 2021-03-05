@@ -1771,7 +1771,7 @@ public class ThoughtRPCClient implements ThoughtClientInterface
       }
 
       @Override
-      public boolean coinbase()
+      public boolean isCoinbase()
       {
         boolean retval = false;
         String cb = mapStr("coinbase");
@@ -1780,6 +1780,12 @@ public class ThoughtRPCClient implements ThoughtClientInterface
           retval = true;
         }
         return retval;
+      }
+      
+      @Override
+      public String coinbase()
+      {
+        return mapStr("coinbase");
       }
 
     }
@@ -2437,17 +2443,17 @@ public class ThoughtRPCClient implements ThoughtClientInterface
   }
 
   @Override
-  public String sendFrom(String fromAccount, String toAddress, double amount, int minConf, String comment)
+  public String sendFrom(String fromAccount, String toAddress, double amount, int minConf, boolean addlocked, String comment)
       throws GenericRpcException
   {
-    return (String) query("sendfrom", fromAccount, toAddress, amount, minConf, comment);
+    return (String) query("sendfrom", fromAccount, toAddress, amount, minConf, addlocked, comment);
   }
 
   @Override
-  public String sendFrom(String fromAccount, String toAddress, double amount, int minConf, String comment, String commentTo)
+  public String sendFrom(String fromAccount, String toAddress, double amount, int minConf, boolean addlocked, String comment, String commentTo)
       throws GenericRpcException
   {
-    return (String) query("sendfrom", fromAccount, toAddress, amount, minConf, comment, commentTo);
+    return (String) query("sendfrom", fromAccount, toAddress, amount, minConf, addlocked, comment, commentTo);
   }
 
   @Override

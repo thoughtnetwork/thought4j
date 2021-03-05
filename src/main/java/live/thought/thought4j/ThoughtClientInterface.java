@@ -872,7 +872,9 @@ public interface ThoughtClientInterface
      */
     interface In extends TxInput, Serializable
     {
-      boolean coinbase();
+      boolean isCoinbase();
+      
+      String coinbase();
       
       Map<String, Object> scriptSig();
 
@@ -1486,6 +1488,8 @@ public interface ThoughtClientInterface
    * @param minConf
    *          The minimum number of confirmations an incoming transaction must
    *          have for its outputs to be credited to this account’s balance.
+   * @param addlocked
+   *          Whether to include transactions locked via InstantSend.
    * @param comment
    *          A locally-stored (not broadcast) comment assigned to this
    *          transaction.
@@ -1495,7 +1499,7 @@ public interface ThoughtClientInterface
    * @see <a href=
    *      "https://bitcoin.org/en/developer-reference#sendfrom">sendfrom</a>
    */
-  String sendFrom(String fromAccount, String toAddress, double amount, int minConf, String comment) throws GenericRpcException;
+  String sendFrom(String fromAccount, String toAddress, double amount, int minConf, boolean addlocked, String comment) throws GenericRpcException;
 
   /**
    * The sendfrom RPC spends an amount from a local account to a Thought address.
@@ -1509,6 +1513,8 @@ public interface ThoughtClientInterface
    * @param minConf
    *          The minimum number of confirmations an incoming transaction must
    *          have for its outputs to be credited to this account’s balance.
+   * @param addlocked
+   *          Whether to include transactions locked via InstantSend.
    * @param comment
    *          A locally-stored (not broadcast) comment assigned to this
    *          transaction.
@@ -1521,7 +1527,7 @@ public interface ThoughtClientInterface
    * @see <a href=
    *      "https://bitcoin.org/en/developer-reference#sendfrom">sendfrom</a>
    */
-  String sendFrom(String fromAccount, String toAddress, double amount, int minConf, String comment, String commentTo)
+  String sendFrom(String fromAccount, String toAddress, double amount, int minConf, boolean addlocked, String comment, String commentTo)
       throws GenericRpcException;
 
   /**
