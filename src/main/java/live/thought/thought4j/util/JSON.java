@@ -100,8 +100,8 @@ public class JSON {
     public static String stringify(String s) {
         StringBuilder b = new StringBuilder(s.length() + 2);
         b.append('"');
-        for(; !s.isEmpty(); s = s.substring(1)) {
-            char c = s.charAt(0);
+        for(int idx = 0; idx < s.length(); idx++) {
+            char c = s.charAt(idx);
             switch (c) {
                 case '\t':
                     b.append("\\t");
