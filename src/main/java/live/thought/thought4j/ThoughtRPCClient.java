@@ -435,6 +435,12 @@ public class ThoughtRPCClient implements ThoughtClientInterface
   {
     return ((Number) query("getbalance", account, minConf)).doubleValue();
   }
+  
+  @Override
+  public Map<String,Double> listAddressBalances(double minBalance) throws GenericRpcException
+  {
+    return (Map<String,Double>) query("listaddressbalances", minBalance);
+  }
 
   @Override
   public SmartFeeResult getEstimateSmartFee(int blocks)

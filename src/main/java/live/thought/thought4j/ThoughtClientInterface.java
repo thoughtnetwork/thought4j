@@ -350,6 +350,15 @@ public interface ThoughtClientInterface
   public double getBalance() throws GenericRpcException;
 
   /**
+   * The listaddressbalance RPC gets the balance in decimal thoughts for all addresses.
+   * 
+   * @param minBalance The minimum balance for an address to be included in the list.
+   * @see <a href=
+   *      "https://bitcoin.org/en/developer-reference#listaddressbalances">listaddressbalances</a>
+   */
+  public Map<String,Double> listAddressBalances(double minBalance) throws GenericRpcException;
+  
+  /**
    * The getbalance RPC gets the balance in decimal thoughts across all accounts
    * or for a particular account.
    * 
