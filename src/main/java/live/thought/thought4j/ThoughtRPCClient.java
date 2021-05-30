@@ -55,6 +55,8 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSocketFactory;
 
+import live.thought.thought4j.ThoughtClientInterface.FundRawTransactionOptions;
+import live.thought.thought4j.ThoughtClientInterface.FundedRawTransaction;
 import live.thought.thought4j.ThoughtClientInterface.Transaction.Details;
 import live.thought.thought4j.util.Base64Coder;
 import live.thought.thought4j.util.CoinUtil;
@@ -338,6 +340,58 @@ public class ThoughtRPCClient implements ThoughtClientInterface
     }
 
     return (String) query("createrawtransaction", pInputs, pOutputs);
+  }
+  
+  class FundedRawTransactionImpl extends MapWrapper implements FundedRawTransaction
+  {
+    private static final long serialVersionUID = 1L;
+
+    public FundedRawTransactionImpl(Map<?, ?> result)
+    {
+      super(result);
+    }
+    
+    @Override
+    public String hex()
+    {
+      return mapStr("hex");
+    }
+
+    @Override
+    public double fee()
+    {
+      return mapDouble("fee");
+    }
+
+    @Override
+    public int changepos()
+    {
+      return mapInt("changepos");
+    }
+    
+  }
+  
+  public FundedRawTransaction fundRawTransaction(String hexstring, FundRawTransactionOptions options) throws GenericRpcException
+  { 
+    Map<?, ?> result = null;
+    if (null != options)
+    {
+      Map<String, Object> optionMap = new LinkedHashMap<String, Object>();
+      if (null != options.getChangeAddress()) optionMap.put("changeAddress", options.getChangeAddress());
+      if (null != options.getChangePosition()) optionMap.put("changePosition", options.getChangePosition());
+      if (null != options.getIncludeWatching()) optionMap.put("includeWatching", options.getIncludeWatching());
+      if (null != options.getLockUnspents()) optionMap.put("lockUnspents", options.getLockUnspents());
+      if (null != options.getReserveChangeKey()) optionMap.put("reserveChangeKey", options.getReserveChangeKey());
+      if (null != options.getFeeRate()) optionMap.put("feeRate", options.getFeeRate());
+      if (null != options.getSubtractFeeFromOutputs()) optionMap.put("subtractFeeFromOutputs", options.getSubtractFeeFromOutputs());
+      result = (Map<?, ?>) query("fundrawtransaction", hexstring, optionMap);
+    }
+    else
+    {
+      result = (Map<?, ?>) query("fundrawtransaction", hexstring);
+    }
+    
+    return new FundedRawTransactionImpl(result);
   }
 
   @Override

@@ -185,8 +185,105 @@ public interface ThoughtClientInterface
    * @see <a href=
    *      "https://bitcoin.org/en/developer-reference#createrawtransaction">createrawtransaction</a>
    */
-  String createRawTransaction(List<TxInput> inputs, List<TxOutput> outputs) throws GenericRpcException;
+  public String createRawTransaction(List<TxInput> inputs, List<TxOutput> outputs) throws GenericRpcException;
 
+  class FundRawTransactionOptions
+  {
+    protected String changeAddress;
+    protected Integer changePosition;
+    protected Boolean includeWatching;
+    protected Boolean lockUnspents;
+    protected Boolean reserveChangeKey;
+    protected Double feeRate;
+    protected List<Integer> subtractFeeFromOutputs;
+    public String getChangeAddress()
+    {
+      return changeAddress;
+    }
+    public void setChangeAddress(String changeAddress)
+    {
+      this.changeAddress = changeAddress;
+    }
+    public Integer getChangePosition()
+    {
+      return changePosition;
+    }
+    public void setChangePosition(Integer changePosition)
+    {
+      this.changePosition = changePosition;
+    }
+    public Boolean getIncludeWatching()
+    {
+      return includeWatching;
+    }
+    public void setIncludeWatching(Boolean includeWatching)
+    {
+      this.includeWatching = includeWatching;
+    }
+    public Boolean getLockUnspents()
+    {
+      return lockUnspents;
+    }
+    public void setLockUnspents(Boolean lockUnspents)
+    {
+      this.lockUnspents = lockUnspents;
+    }
+    public Boolean getReserveChangeKey()
+    {
+      return reserveChangeKey;
+    }
+    public void setReserveChangeKey(Boolean reserveChangeKey)
+    {
+      this.reserveChangeKey = reserveChangeKey;
+    }
+    public Double getFeeRate()
+    {
+      return feeRate;
+    }
+    public void setFeeRate(Double feeRate)
+    {
+      this.feeRate = feeRate;
+    }
+    public List<Integer> getSubtractFeeFromOutputs()
+    {
+      return subtractFeeFromOutputs;
+    }
+    public void setSubtractFeeFromOutputs(List<Integer> subtractFeeFromOutputs)
+    {
+      this.subtractFeeFromOutputs = subtractFeeFromOutputs;
+    }
+  }
+  
+  interface FundedRawTransaction extends Serializable
+  {
+    String hex();
+    
+    double fee();
+    
+    int changepos();
+  }
+  
+  
+  /**
+   * Add inputs to a transaction until it has enough in value to meet its out value.
+   * This will not modify existing inputs, and will add at most one change output to the outputs.
+   * No existing outputs will be modified unless "subtractFeeFromOutputs" is specified.
+   * Note that inputs which were signed may need to be resigned after completion since in/outputs have been added.
+   * The inputs added will not be signed, use signrawtransaction for that.
+   * Note that all existing inputs must have their previous output transaction be in the wallet.
+   * Note that all inputs selected must be of standard form and P2SH scripts must be
+   * in the wallet using importaddress or addmultisigaddress (to calculate fees).
+   * You can see whether this is the case by checking the "solvable" field in the listunspent output.
+   * Only pay-to-pubkey, multisig, and P2SH versions thereof are currently supported for watch-only
+   * 
+   * @param hexstring The string returned from createRawTransaction()
+   * @param options
+   * 
+   * @return The hex string of the funded transaction, ready for signing.
+   * @throws GenericRpcException
+   */
+  public FundedRawTransaction fundRawTransaction(String hexstring, FundRawTransactionOptions options) throws GenericRpcException;
+  
   /**
    * The dumpprivkey RPC returns the wallet-import-format (WIF) private key
    * corresponding to an address. (But does not remove it from the wallet.)
