@@ -121,11 +121,11 @@ public class ThoughtRPCClient implements ThoughtClientInterface
       File f;
       File home = new File(System.getProperty("user.home"));
 
-      if ((f = new File(home, ".thought" + File.separatorChar + "thought.conf")).exists())
+      if ((f = new File(home, ".thoughtcore" + File.separatorChar + "thought.conf")).exists())
       {
       }
       else if ((f = new File(home,
-          "AppData" + File.separatorChar + "Roaming" + File.separatorChar + "Thought" + File.separatorChar + "thought.conf"))
+          "AppData" + File.separatorChar + "Roaming" + File.separatorChar + "ThoughtCore" + File.separatorChar + "thought.conf"))
               .exists())
       {
       }
@@ -3102,6 +3102,112 @@ public class ThoughtRPCClient implements ThoughtClientInterface
       retval.add(moi);
     }
     
+    return retval;
+  }
+
+  private class MasternodeInfoImpl implements MasternodeInfo
+  {
+    Map map;
+    
+    public MasternodeInfoImpl(Map map)
+    {
+      this.map = map;
+    }
+    
+    @Override
+    public String address()
+    {
+      return (String)map.get("address");
+    }
+
+    @Override
+    public String payee()
+    {
+      return (String)map.get("payee");
+    }
+
+    @Override
+    public String status()
+    {
+      return (String)map.get("status");
+    }
+
+    @Override
+    public String protocol()
+    {
+      return (String)map.get("protocol");
+    }
+
+    @Override
+    public String daemonversion()
+    {
+      return (String)map.get("daemonversion");
+    }
+
+    @Override
+    public String sentinelversion()
+    {
+      return (String)map.get("sentinelversion");
+    }
+
+    @Override
+    public String sentinelstate()
+    {
+      return (String)map.get("sentinelstate");
+    }
+
+    @Override
+    public long lastseen()
+    {
+      Long l = (Long)map.get("lastseen");
+      return null == l ? 0 : l.longValue();
+    }
+
+    @Override
+    public long activeseconds()
+    {
+      Long l = (Long)map.get("activeseconds");
+      return null == l ? 0 : l.longValue();
+    }
+
+    @Override
+    public long lastpaidtime()
+    {
+      Long l = (Long)map.get("lastpaidtime");
+      return null == l ? 0 : l.longValue();
+    }
+
+    @Override
+    public long lastpaidblock()
+    {
+      Long l = (Long)map.get("lastpaidblock");
+      return null == l ? 0 : l.longValue();
+    }
+
+    @Override
+    public String owneraddress()
+    {
+      return (String)map.get("owneraddress");
+    }
+
+    @Override
+    public String votingaddress()
+    {
+      return (String)map.get("votingaddress");
+    }
+    
+  }
+  
+  @Override
+  public Map<String, MasternodeInfo> masternodeList()
+  {
+    Map<String, MasternodeInfo> retval = new LinkedHashMap<String, MasternodeInfo>();
+    Map results = (Map) query("masternode", "list");
+    Set keys = results.keySet();
+    for (Object key : keys)
+    {
+      retval.put((String)key, new MasternodeInfoImpl((Map)results.get(key)));
+    }
     return retval;
   }
 }

@@ -2328,5 +2328,36 @@ public interface ThoughtClientInterface
   }
   
   List<MasternodeOutput> masternodeOutputs();
+  
+  static interface MasternodeInfo extends Serializable
+  {
+    public String address();
+    
+    public String payee();
+    
+    public String status();
+    
+    public String protocol();
+    
+    public String daemonversion();
+    
+    public String sentinelversion();
+    
+    public String sentinelstate();
+    
+    public long lastseen();
+    
+    public long activeseconds();
+    
+    public long lastpaidtime();
+    
+    public long lastpaidblock();
+    
+    public String owneraddress();
+    
+    public String votingaddress();
+  }
+  
+  Map<String, MasternodeInfo> masternodeList();
 }
 
