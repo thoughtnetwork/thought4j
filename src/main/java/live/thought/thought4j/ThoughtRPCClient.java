@@ -40,6 +40,7 @@ import java.nio.charset.Charset;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -312,6 +313,43 @@ public class ThoughtRPCClient implements ThoughtClientInterface
     }
   }
 
+  public String queryJson(String method, Object... o) throws GenericRpcException
+  {
+    HttpURLConnection conn;
+    try
+    {
+      conn = (HttpURLConnection) noAuthURL.openConnection();
+
+      conn.setDoOutput(true);
+      conn.setDoInput(true);
+
+      if (conn instanceof HttpsURLConnection)
+      {
+        if (hostnameVerifier != null)
+          ((HttpsURLConnection) conn).setHostnameVerifier(hostnameVerifier);
+        if (sslSocketFactory != null)
+          ((HttpsURLConnection) conn).setSSLSocketFactory(sslSocketFactory);
+      }
+
+      // conn.connect();
+      ((HttpURLConnection) conn).setRequestProperty("Authorization", "Basic " + authStr);
+      byte[] r = prepareRequest(method, o);
+      logger.log(Level.FINE, "Thought JSON-RPC request:\n{0}", new String(r, QUERY_CHARSET));
+      conn.getOutputStream().write(r);
+      conn.getOutputStream().close();
+      int responseCode = conn.getResponseCode();
+      if (responseCode != 200)
+        throw new ThoughtRPCException(method, Arrays.deepToString(o), responseCode, conn.getResponseMessage(),
+            new String(loadStream(conn.getErrorStream(), true)));
+      return new String(loadStream(conn.getInputStream(), true));
+    }
+    catch (IOException ex)
+    {
+      throw new ThoughtRPCException(method, Arrays.deepToString(o), ex);
+    }
+  }
+
+  
   @Override
   public String createRawTransaction(List<TxInput> inputs, List<TxOutput> outputs) throws GenericRpcException
   {
@@ -440,6 +478,17 @@ public class ThoughtRPCClient implements ThoughtClientInterface
   public Map<String,Double> listAddressBalances(double minBalance) throws GenericRpcException
   {
     return (Map<String,Double>) query("listaddressbalances", minBalance);
+  }
+  
+  static Map<String,Collection<String>> addrParam = new HashMap<String, Collection<String>>();
+  
+  @Override 
+  public double getAddressBalance(Set<String> addresses) throws GenericRpcException
+  {
+    addrParam.put("addresses", addresses);
+    Map<String, Long> retval = (Map<String,Long>)query("getaddressbalance", addrParam);
+    double notions = ((Number)retval.get("balance")).doubleValue();
+    return notions/100000000;
   }
 
   @Override
@@ -2464,6 +2513,12 @@ public class ThoughtRPCClient implements ThoughtClientInterface
   public List<Unspent> listUnspent(int minConf, int maxConf, String... addresses) throws GenericRpcException
   {
     return new UnspentListWrapper((List) query("listunspent", minConf, maxConf, addresses));
+  }
+  
+  @Override
+  public String listUnspentJson(int minConf, int maxConf, String... addresses) throws GenericRpcException
+  {
+    return queryJson("listunspent", minConf, maxConf, addresses);
   }
 
   @Override

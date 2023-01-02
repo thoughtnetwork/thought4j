@@ -31,6 +31,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -383,7 +384,17 @@ public interface ThoughtClientInterface
    *      "https://bitcoin.org/en/developer-reference#getbalance">getbalance</a>
    */
   public double getBalance(String account, int minConf) throws GenericRpcException;
-
+  
+  
+  /**
+   * The getaddressbalance RPC gets the balance in decimal thoughts for the specified
+   * addresses.
+   * 
+   * @see <a href=
+   *      "https://bitcoin.org/en/developer-reference#getbalance">getbalance</a>
+   */
+  public double getAddressBalance(Set<String> addresses) throws GenericRpcException;
+  
   /**
    * The getinfo RPC prints various information about the node and the network.
    * 
@@ -1500,6 +1511,7 @@ public interface ThoughtClientInterface
    *      "https://bitcoin.org/en/developer-reference#listunspent">listunspent</a>
    */
   List<Unspent> listUnspent(int minConf, int maxConf, String... addresses) throws GenericRpcException;
+  String        listUnspentJson(int minConf, int maxConf, String... addresses) throws GenericRpcException;
 
   /**
    * The move RPC moves a specified amount from one account in your wallet to
