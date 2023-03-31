@@ -49,6 +49,17 @@ public interface ThoughtClientInterface
    * {"address":amount,...} ( minconf "comment" ) (DEPRECATED) setaccount
    * "bitcoinaddress" "account"
    */
+  
+  /**
+   * The getaddresstxids RPC returns a list of every transaction id for a list of addresses.
+   * 
+   * @param addresses
+   *          The list of addresses to get transaction ids for.
+   * 
+   */
+  public List<String> getAddressTxids(Set<String> addresses) throws GenericRpcException;
+  
+  
   public static interface TxInput extends Serializable
   {
 

@@ -490,6 +490,14 @@ public class ThoughtRPCClient implements ThoughtClientInterface
     double notions = ((Number)retval.get("balance")).doubleValue();
     return notions/100000000;
   }
+  
+  @Override 
+  public List<String> getAddressTxids(Set<String> addresses) throws GenericRpcException
+  {
+    addrParam.put("addresses", addresses);
+    List<String> retval = (List<String>)query("getaddresstxids", addrParam);
+    return retval;
+  }
 
   @Override
   public SmartFeeResult getEstimateSmartFee(int blocks)
