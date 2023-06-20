@@ -59,6 +59,8 @@ public interface ThoughtClientInterface
    */
   public List<String> getAddressTxids(Set<String> addresses) throws GenericRpcException;
   
+  public List<String> getAddressTxids(Set<String> addresses, int start, int end) throws GenericRpcException;
+  
   
   public static interface TxInput extends Serializable
   {

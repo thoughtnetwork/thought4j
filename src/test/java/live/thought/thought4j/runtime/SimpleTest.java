@@ -1,11 +1,13 @@
 package live.thought.thought4j.runtime;
 
+import java.util.Map;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import live.thought.thought4j.ThoughtClientInterface;
 import live.thought.thought4j.ThoughtClientInterface.BlockTemplate;
+import live.thought.thought4j.ThoughtClientInterface.MasternodeInfo;
 import live.thought.thought4j.ThoughtRPCClient;
 
 public class SimpleTest
@@ -22,11 +24,14 @@ public class SimpleTest
   {
     ThoughtClientInterface b = new ThoughtRPCClient(false);
 
-    System.out.println(b.getBlockChainInfo());
+    Map<String, MasternodeInfo> masternodes = b.masternodeList();
+    System.out.println("Masternode count: " + masternodes.size());
+    
+    //System.out.println(b.getBlockChainInfo());
     System.out.println(b.getMiningInfo());
-    BlockTemplate bl = b.getBlockTemplate();
-    System.out.println(bl);
-    b.submitBlock("0009c8d");
+    //BlockTemplate bl = b.getBlockTemplate();
+    //System.out.println(bl);
+    //b.submitBlock("0009c8d");
     //System.out.println(b.getBlockTemplate(bl.longpollid()));
 
     //String aa = "kzSJ2PorYyS5zY6VuMygsSiae7wTBRBm5W";

@@ -498,6 +498,17 @@ public class ThoughtRPCClient implements ThoughtClientInterface
     List<String> retval = (List<String>)query("getaddresstxids", addrParam);
     return retval;
   }
+  
+  @Override 
+  public List<String> getAddressTxids(Set<String> addresses, int start, int end) throws GenericRpcException
+  {
+    Map<String, Object> params = new LinkedHashMap<String, Object>();
+    params.put("addresses", addresses);
+    params.put("start", start);
+    params.put("end", end);
+    List<String> retval = (List<String>)query("getaddresstxids", params);
+    return retval;
+  }
 
   @Override
   public SmartFeeResult getEstimateSmartFee(int blocks)
