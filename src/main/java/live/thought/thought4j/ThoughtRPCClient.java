@@ -482,13 +482,46 @@ public class ThoughtRPCClient implements ThoughtClientInterface
   
   static Map<String,Collection<String>> addrParam = new HashMap<String, Collection<String>>();
   
+  private class AddressBalanceInfoWrapper extends MapWrapper implements AddressBalanceInfo, Serializable
+  {
+    private static final long serialVersionUID = 1L;
+
+    public AddressBalanceInfoWrapper(Map<?, ?> m)
+    {
+      super(m);
+    }
+
+    @Override
+    public long balance()
+    {
+      return mapLong("balance");
+    }
+
+    @Override
+    public long balance_immature()
+    {
+      return mapLong("balance_immature");
+    }
+
+    @Override
+    public long balance_spendable()
+    {
+      return mapLong("balance_spendable");
+    }
+
+    @Override
+    public long received()
+    {
+      return mapLong("received");
+    }
+  }
+
+  
   @Override 
-  public double getAddressBalance(Set<String> addresses) throws GenericRpcException
+  public AddressBalanceInfo getAddressBalance(Set<String> addresses) throws GenericRpcException
   {
     addrParam.put("addresses", addresses);
-    Map<String, Long> retval = (Map<String,Long>)query("getaddressbalance", addrParam);
-    double notions = ((Number)retval.get("balance")).doubleValue();
-    return notions/100000000;
+    return new AddressBalanceInfoWrapper((Map<?,?>) query("getaddressbalance", addrParam));
   }
   
   @Override 

@@ -40,7 +40,7 @@ import java.util.Set;
  */
 public interface ThoughtClientInterface
 {
-
+  public static long COIN = 100000000;
   /*
    * Missing methods:  getgenerate
    * gethashespersec getwork ( "data" ) help ( "command" ) listaddressgroupings
@@ -398,6 +398,13 @@ public interface ThoughtClientInterface
    */
   public double getBalance(String account, int minConf) throws GenericRpcException;
   
+  interface AddressBalanceInfo extends Serializable
+  {
+    long balance(); 
+    long balance_immature(); 
+    long balance_spendable(); 
+    long received(); 
+  }
   
   /**
    * The getaddressbalance RPC gets the balance in decimal thoughts for the specified
@@ -406,7 +413,7 @@ public interface ThoughtClientInterface
    * @see <a href=
    *      "https://bitcoin.org/en/developer-reference#getbalance">getbalance</a>
    */
-  public double getAddressBalance(Set<String> addresses) throws GenericRpcException;
+  public AddressBalanceInfo getAddressBalance(Set<String> addresses) throws GenericRpcException;
   
   /**
    * The getinfo RPC prints various information about the node and the network.

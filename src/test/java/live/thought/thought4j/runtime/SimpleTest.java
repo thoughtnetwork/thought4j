@@ -1,11 +1,14 @@
 package live.thought.thought4j.runtime;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import live.thought.thought4j.ThoughtClientInterface;
+import live.thought.thought4j.ThoughtClientInterface.AddressBalanceInfo;
 import live.thought.thought4j.ThoughtClientInterface.BlockTemplate;
 import live.thought.thought4j.ThoughtClientInterface.MasternodeInfo;
 import live.thought.thought4j.ThoughtRPCClient;
@@ -22,7 +25,7 @@ public class SimpleTest
 
   public static void main(String[] args) throws Exception
   {
-    ThoughtClientInterface b = new ThoughtRPCClient(false);
+    ThoughtClientInterface b = new ThoughtRPCClient(true);
 
     Map<String, MasternodeInfo> masternodes = b.masternodeList();
     System.out.println("Masternode count: " + masternodes.size());
@@ -49,6 +52,13 @@ public class SimpleTest
     // b.importPrivKey(b.dumpPrivKey(aa));
 
     //System.out.println(b.getAddressesByAccount("TEST"));
+    Set<String> addresses = new HashSet<String>();
+    addresses.add("kvdPDVw6T6ws8N2fAZiaFMHsJLXWDXtHiq");
+    AddressBalanceInfo abi = b.getAddressBalance(addresses);
+    System.out.println("Balance:   " + abi.balance());
+    System.out.println("Spendable: " + abi.balance_spendable());
+    System.out.println("Immature:  " + abi.balance_immature());
+    System.out.println("Received:  " + abi.received());
     
   }
 }
