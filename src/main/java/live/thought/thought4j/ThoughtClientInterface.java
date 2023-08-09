@@ -52,6 +52,7 @@ public interface ThoughtClientInterface
   
   /**
    * The getaddresstxids RPC returns a list of every transaction id for a list of addresses.
+   * Requires addressindex=1 in the server node.
    * 
    * @param addresses
    *          The list of addresses to get transaction ids for.
@@ -60,6 +61,33 @@ public interface ThoughtClientInterface
   public List<String> getAddressTxids(Set<String> addresses) throws GenericRpcException;
   
   public List<String> getAddressTxids(Set<String> addresses, int start, int end) throws GenericRpcException;
+  
+  
+  public static interface AddressUtxo extends Serializable
+  {
+    public String address();
+    
+    public String txid();
+    
+    public int outputIndex();
+    
+    public String script();
+    
+    public long notions();
+    
+    public int height();
+  }
+  
+  /**
+   * The getaddressutxos RPC returns a list of every unspent transaction output for a list of addresses.
+   * Requires addressindex=1 in the server node.
+   * 
+   * @param addresses
+   *          The list of addresses to get utxos for.
+   * 
+   */
+  public List<AddressUtxo> getAddressUtxos(Set<String> addresses) throws GenericRpcException;
+  
   
   
   public static interface TxInput extends Serializable
@@ -400,20 +428,39 @@ public interface ThoughtClientInterface
   
   interface AddressBalanceInfo extends Serializable
   {
-    long balance(); 
-    long balance_immature(); 
-    long balance_spendable(); 
-    long received(); 
+    public long balance(); 
+    public long balance_immature(); 
+    public long balance_spendable(); 
+    public long received(); 
   }
   
   /**
    * The getaddressbalance RPC gets the balance in decimal thoughts for the specified
-   * addresses.
+   * addresses (requires addressindex to be enabled).
    * 
    * @see <a href=
    *      "https://bitcoin.org/en/developer-reference#getbalance">getbalance</a>
    */
   public AddressBalanceInfo getAddressBalance(Set<String> addresses) throws GenericRpcException;
+  
+  interface AddressMempoolInfo extends Serializable
+  {
+    public String address();
+    public String txid();
+    public int index();
+    public long notions();
+    public long timestamp();
+    public String prevtxid();
+    public String prevout();
+  }
+  
+  /**
+   * The getaddressmempool RPC Returns all mempool deltas for an address (requires addressindex to be enabled).
+   * 
+   * @see <a href=
+   *      "https://bitcoin.org/en/developer-reference#getbalance">getbalance</a>
+   */
+  public List<AddressMempoolInfo> getAddressMempool(Set<String> addresses) throws GenericRpcException;  
   
   /**
    * The getinfo RPC prints various information about the node and the network.
