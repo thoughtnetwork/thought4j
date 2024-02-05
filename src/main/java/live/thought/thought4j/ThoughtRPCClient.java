@@ -433,6 +433,25 @@ public class ThoughtRPCClient implements ThoughtClientInterface
   }
 
   @Override
+  public boolean lockunspent(boolean lock, List<BasicTxInput> inputs) throws GenericRpcException
+  {
+    List<Map<?, ?>> pInputs = new ArrayList<>();
+
+    for (final TxInput txInput : inputs)
+    {
+      pInputs.add(new LinkedHashMap<String, Object>()
+      {
+        private static final long serialVersionUID = 1L;
+        {
+          put("txid", txInput.txid());
+          put("vout", txInput.vout());
+        }
+      });
+    }
+    return (boolean) query("lockunspent", lock, pInputs);
+  }
+
+  @Override
   public String dumpPrivKey(String address) throws GenericRpcException
   {
     return (String) query("dumpprivkey", address);

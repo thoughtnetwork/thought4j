@@ -49,6 +49,19 @@ public interface ThoughtClientInterface
    * {"address":amount,...} ( minconf "comment" ) (DEPRECATED) setaccount
    * "bitcoinaddress" "account"
    */
+
+  /**
+   * The lockunspent RPC locks
+   *
+   * @param lock
+   *          (boolean, required) Whether to unlock (true) or lock (false) the specified transactions
+   *
+   * @param inputs
+   *          (string, optional) A json array of objects. Each object the txid (string) vout (numeric)
+   *
+   * @return true|false    (boolean) Whether the command was successful or not
+   */
+  public boolean lockunspent(boolean lock, List<BasicTxInput> inputs) throws GenericRpcException;
   
   /**
    * The getaddresstxids RPC returns a list of every transaction id for a list of addresses.
