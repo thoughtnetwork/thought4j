@@ -56,6 +56,7 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSocketFactory;
 
+import live.thought.thought4j.ThoughtClientInterface.AddressUtxo;
 import live.thought.thought4j.ThoughtClientInterface.FundRawTransactionOptions;
 import live.thought.thought4j.ThoughtClientInterface.FundedRawTransaction;
 import live.thought.thought4j.ThoughtClientInterface.Transaction.Details;
@@ -501,13 +502,114 @@ public class ThoughtRPCClient implements ThoughtClientInterface
   
   static Map<String,Collection<String>> addrParam = new HashMap<String, Collection<String>>();
   
+  private class AddressBalanceInfoWrapper extends MapWrapper implements AddressBalanceInfo, Serializable
+  {
+    private static final long serialVersionUID = 1L;
+
+    public AddressBalanceInfoWrapper(Map<?, ?> m)
+    {
+      super(m);
+    }
+
+    @Override
+    public long balance()
+    {
+      return mapLong("balance");
+    }
+
+    @Override
+    public long balance_immature()
+    {
+      return mapLong("balance_immature");
+    }
+
+    @Override
+    public long balance_spendable()
+    {
+      return mapLong("balance_spendable");
+    }
+
+    @Override
+    public long received()
+    {
+      return mapLong("received");
+    }
+  }
+
+  
   @Override 
-  public double getAddressBalance(Set<String> addresses) throws GenericRpcException
+  public AddressBalanceInfo getAddressBalance(Set<String> addresses) throws GenericRpcException
   {
     addrParam.put("addresses", addresses);
-    Map<String, Long> retval = (Map<String,Long>)query("getaddressbalance", addrParam);
-    double notions = ((Number)retval.get("balance")).doubleValue();
-    return notions/100000000;
+    return new AddressBalanceInfoWrapper((Map<?,?>) query("getaddressbalance", addrParam));
+  }
+  
+  private class AddressMempoolInfoWrapper extends MapWrapper implements AddressMempoolInfo
+  {
+    
+    public AddressMempoolInfoWrapper(Map<?, ?> m)
+    {
+      super(m);
+    }
+
+    @Override
+    public String address()
+    {
+      return mapStr("address");
+    }
+
+    @Override
+    public String txid()
+    {
+      return mapStr("txid");
+    }
+
+    @Override
+    public int index()
+    {
+      return mapInt("index");
+    }
+
+    @Override
+    public long notions()
+    {
+      return mapLong("notions");
+    }
+
+    @Override
+    public long timestamp()
+    {
+      return mapLong("timestamp");
+    }
+
+    @Override
+    public String prevtxid()
+    {
+      return mapStr("prevtxid");
+    }
+
+    @Override
+    public String prevout()
+    {
+      return mapStr("prevout");
+    }
+    
+  }
+  
+  @Override 
+  public List<AddressMempoolInfo> getAddressMempool(Set<String> addresses) throws GenericRpcException
+  {
+    addrParam.put("addresses", addresses);
+    List<AddressMempoolInfo> retval = new LinkedList<AddressMempoolInfo>();
+      
+    List<Map<?,?>> maps = (List<Map<?,?>>)query("getaddressmempool", addrParam);
+    
+    for (Map<?,?> m : maps)
+    {
+      AddressMempoolInfo ampi = new AddressMempoolInfoWrapper(m);
+      retval.add(ampi);
+    }
+    return retval;
   }
   
   @Override 
@@ -526,6 +628,71 @@ public class ThoughtRPCClient implements ThoughtClientInterface
     params.put("start", start);
     params.put("end", end);
     List<String> retval = (List<String>)query("getaddresstxids", params);
+    return retval;
+  }
+  
+  
+  private class AddressUtxoWrapper extends MapWrapper implements AddressUtxo
+  {
+    
+    public AddressUtxoWrapper(Map<?, ?> m)
+    {
+      super(m);
+    }
+
+    @Override
+    public String address()
+    {
+      return mapStr("address");
+    }
+
+    @Override
+    public String txid()
+    {
+      return mapStr("txid");
+    }
+
+    @Override
+    public int outputIndex()
+    {
+      return mapInt("outputIndex");
+    }
+
+    @Override
+    public long notions()
+    {
+      return mapLong("notions");
+    }
+
+    @Override
+    public String script()
+    {
+      return mapStr("script");
+    }
+
+    @Override
+    public int height()
+    {
+      return mapInt("height");
+    }
+
+    
+   
+  }
+
+  @Override
+  public List<AddressUtxo> getAddressUtxos(Set<String> addresses) throws GenericRpcException
+  {
+    addrParam.put("addresses", addresses);
+    List<AddressUtxo> retval = new LinkedList<AddressUtxo>();
+      
+    List<Map<?,?>> maps = (List<Map<?,?>>)query("getaddressutxos", addrParam);
+    
+    for (Map<?,?> m : maps)
+    {
+      AddressUtxo utxo = new AddressUtxoWrapper(m);
+      retval.add(utxo);
+    }
     return retval;
   }
 
