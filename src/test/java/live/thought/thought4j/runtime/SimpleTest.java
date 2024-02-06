@@ -1,5 +1,7 @@
 package live.thought.thought4j.runtime;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -22,13 +24,13 @@ public class SimpleTest
 
   public static void main(String[] args) throws Exception
   {
-    ThoughtClientInterface b = new ThoughtRPCClient(false);
+    ThoughtClientInterface b = new ThoughtRPCClient(true);
 
-    Map<String, MasternodeInfo> masternodes = b.masternodeList();
-    System.out.println("Masternode count: " + masternodes.size());
+    //Map<String, MasternodeInfo> masternodes = b.masternodeList();
+    //System.out.println("Masternode count: " + masternodes.size());
     
     //System.out.println(b.getBlockChainInfo());
-    System.out.println(b.getMiningInfo());
+    //System.out.println(b.getMiningInfo());
     //BlockTemplate bl = b.getBlockTemplate();
     //System.out.println(bl);
     //b.submitBlock("0009c8d");
@@ -49,6 +51,9 @@ public class SimpleTest
     // b.importPrivKey(b.dumpPrivKey(aa));
 
     //System.out.println(b.getAddressesByAccount("TEST"));
+    ThoughtClientInterface.BasicTxInput basicTxInput = new ThoughtClientInterface.BasicTxInput("d511fbbfa09e5ddbbd4cdd0d79aa2135b52415c8986d84729cb3874c62776423", 1);
+    List<ThoughtClientInterface.BasicTxInput> inputSet = Collections.singletonList(basicTxInput);
+    System.out.println(b.lockunspent(false, inputSet));
     
   }
 }
