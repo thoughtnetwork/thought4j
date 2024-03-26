@@ -28,6 +28,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -128,5 +129,123 @@ public class ThoughtRPCClientTest {
         List<ThoughtClientInterface.BasicTxInput> inputSet = Collections.singletonList(basicTxInput);
         boolean bool = client.lockunspent(false, inputSet);
         assertEquals("true", String.valueOf(bool));
+    }
+
+    @Test
+    public void listlockunspentTest() throws Exception {
+        client = new MyClientTest(true, "listlockunspent", null,
+                "[\n" +
+                        "  {\n" +
+                        "    \"txid\": \"210789515218c170ab441965dd92a8a9afc64959da1974c576108cef086a9e2c\",\n" +
+                        "    \"vout\": 0\n" +
+                        "  },\n" +
+                        "  {\n" +
+                        "    \"txid\": \"cd08e9d1b8b3b3aac59d41f97939691e9076e441ef2bb58dfe172fb0454b432e\",\n" +
+                        "    \"vout\": 0\n" +
+                        "  },\n" +
+                        "  {\n" +
+                        "    \"txid\": \"725d9f4b31bd53fca87c5528ced1ebc1df2b893e3521917587fe15793ddb445c\",\n" +
+                        "    \"vout\": 0\n" +
+                        "  },\n" +
+                        "  {\n" +
+                        "    \"txid\": \"554269ff92caca96768c4e962463e6d42692fcf2f3bfc4ef8ed3af4d8bc811a3\",\n" +
+                        "    \"vout\": 0\n" +
+                        "  },\n" +
+                        "  {\n" +
+                        "    \"txid\": \"bdeb93b5a0bd8d5c31ac16723ce9519e46b182d974153f8b1130a6b2192fb4b0\",\n" +
+                        "    \"vout\": 0\n" +
+                        "  },\n" +
+                        "  {\n" +
+                        "    \"txid\": \"dd84c039f29012e0a438c882fc7789b39872b6bb4d96b05cc90b0bff3bcd9bc5\",\n" +
+                        "    \"vout\": 0\n" +
+                        "  },\n" +
+                        "  {\n" +
+                        "    \"txid\": \"52bedf25cdf864275925f61289c0b2a28f03ce5af7de78bca94059b32f0641cb\",\n" +
+                        "    \"vout\": 0\n" +
+                        "  },\n" +
+                        "  {\n" +
+                        "    \"txid\": \"431fd51f9b9c090b50ff9204a40342da5de0fad8ff2d4713a6bde9f00ec40ecd\",\n" +
+                        "    \"vout\": 0\n" +
+                        "  },\n" +
+                        "  {\n" +
+                        "    \"txid\": \"e28dc9af5edc28712b197a3deaf12313df661321c1018fa5fd2bda0e0ea116ce\",\n" +
+                        "    \"vout\": 0\n" +
+                        "  },\n" +
+                        "  {\n" +
+                        "    \"txid\": \"b938131ff0ed9b940a5aa94c434dd34403436b92dc23da5d94002d7a287769d3\",\n" +
+                        "    \"vout\": 0\n" +
+                        "  },\n" +
+                        "  {\n" +
+                        "    \"txid\": \"2d5bde2a8067c117fdabcac48b5799fcbd0b7e4b38fdce484c2c4abef490dfe1\",\n" +
+                        "    \"vout\": 0\n" +
+                        "  }\n" +
+                        "]\n");
+        List<ThoughtClientInterface.LockedUnspent> listLockedUnspents = client.listlockunspent();
+        Iterator<ThoughtClientInterface.LockedUnspent> iterator = listLockedUnspents.iterator();
+
+        StringBuilder lockedUnspent = new StringBuilder();
+        lockedUnspent.append("[\n");
+        while (iterator.hasNext()) {
+            ThoughtClientInterface.LockedUnspent lunspent = iterator.next();
+            lockedUnspent.append("  " + "{\n");
+            lockedUnspent.append("    " + "\"txid\": " + "\"" + lunspent.txid() +"\"" + ",\n");
+            lockedUnspent.append("    " + "\"vout\": " + lunspent.vout() + "\n");
+            if (iterator.hasNext()) {
+                lockedUnspent.append("  " + "},\n");
+            } else{
+                lockedUnspent.append("  " + "}\n");
+                lockedUnspent.append("]\n");
+            }
+
+        }
+
+        String output = new String(lockedUnspent);
+
+        assertEquals("[\n" +
+                "  {\n" +
+                "    \"txid\": \"210789515218c170ab441965dd92a8a9afc64959da1974c576108cef086a9e2c\",\n" +
+                "    \"vout\": 0\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"txid\": \"cd08e9d1b8b3b3aac59d41f97939691e9076e441ef2bb58dfe172fb0454b432e\",\n" +
+                "    \"vout\": 0\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"txid\": \"725d9f4b31bd53fca87c5528ced1ebc1df2b893e3521917587fe15793ddb445c\",\n" +
+                "    \"vout\": 0\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"txid\": \"554269ff92caca96768c4e962463e6d42692fcf2f3bfc4ef8ed3af4d8bc811a3\",\n" +
+                "    \"vout\": 0\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"txid\": \"bdeb93b5a0bd8d5c31ac16723ce9519e46b182d974153f8b1130a6b2192fb4b0\",\n" +
+                "    \"vout\": 0\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"txid\": \"dd84c039f29012e0a438c882fc7789b39872b6bb4d96b05cc90b0bff3bcd9bc5\",\n" +
+                "    \"vout\": 0\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"txid\": \"52bedf25cdf864275925f61289c0b2a28f03ce5af7de78bca94059b32f0641cb\",\n" +
+                "    \"vout\": 0\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"txid\": \"431fd51f9b9c090b50ff9204a40342da5de0fad8ff2d4713a6bde9f00ec40ecd\",\n" +
+                "    \"vout\": 0\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"txid\": \"e28dc9af5edc28712b197a3deaf12313df661321c1018fa5fd2bda0e0ea116ce\",\n" +
+                "    \"vout\": 0\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"txid\": \"b938131ff0ed9b940a5aa94c434dd34403436b92dc23da5d94002d7a287769d3\",\n" +
+                "    \"vout\": 0\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"txid\": \"2d5bde2a8067c117fdabcac48b5799fcbd0b7e4b38fdce484c2c4abef490dfe1\",\n" +
+                "    \"vout\": 0\n" +
+                "  }\n" +
+                "]\n", output);
     }
 }
