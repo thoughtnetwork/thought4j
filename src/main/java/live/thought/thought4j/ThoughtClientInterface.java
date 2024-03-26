@@ -42,13 +42,31 @@ public interface ThoughtClientInterface
 {
   public static long COIN = 100000000;
   /*
-   * Missing methods:  getgenerate
-   * gethashespersec getwork ( "data" ) help ( "command" ) listaddressgroupings
-   * listlockunspent (DEPRECATED) listreceivedbyaccount ( minconf includeempty )
-   * lockunspent unlock [{"txid":"txid","vout":n},...] sendmany "fromaccount"
-   * {"address":amount,...} ( minconf "comment" ) (DEPRECATED) setaccount
-   * "bitcoinaddress" "account"
+   * Missing methods:
+   * getgenerate
+   * gethashespersec
+   * getwork ( "data" ) help ( "command" )
+   * listaddressgroupings
+   * listlockunspent
+   * (DEPRECATED) listreceivedbyaccount ( minconf includeempty ) {"address":amount,...} ( minconf "comment" )
+   * (DEPRECATED) setaccount "bitcoinaddress" "account"
    */
+
+  public interface LockedUnspent
+  {
+    public String txid();
+
+    public int vout();
+
+  }
+
+  /**
+   * The listlockunspent RPC lists the locked transactions in the wallet (if wallet is enabled)
+   *
+   *
+   * @return true|false    (boolean) Whether the command was successful or not
+   */
+  public List<LockedUnspent> listlockunspent() throws GenericRpcException;
 
   /**
    * The lockunspent RPC locks
@@ -62,14 +80,13 @@ public interface ThoughtClientInterface
    * @return true|false    (boolean) Whether the command was successful or not
    */
   public boolean lockunspent(boolean lock, List<BasicTxInput> inputs) throws GenericRpcException;
-  
+
   /**
    * The getaddresstxids RPC returns a list of every transaction id for a list of addresses.
-   * Requires addressindex=1 in the server node.
-   * 
+   *
    * @param addresses
    *          The list of addresses to get transaction ids for.
-   * 
+   *
    */
   public List<String> getAddressTxids(Set<String> addresses) throws GenericRpcException;
   

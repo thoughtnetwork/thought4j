@@ -452,6 +452,40 @@ public class ThoughtRPCClient implements ThoughtClientInterface
     return (boolean) query("lockunspent", lock, pInputs);
   }
 
+  private class LockedUnspentImpl implements LockedUnspent
+  {
+    String txid;
+    int    vout;
+
+    @Override
+    public String txid()
+    {
+      return txid;
+    }
+
+    @Override
+    public int vout()
+    {
+      return vout;
+    }
+
+  }
+
+  @Override
+  public List<LockedUnspent> listlockunspent() throws GenericRpcException
+  {
+    List<Map<?,?>> maps = (List<Map<?,?>>) query("listlockunspent");
+    List<LockedUnspent> retval = new ArrayList<>();
+    for (Map<?,?> m : maps)
+    {
+      LockedUnspentImpl lui = new LockedUnspentImpl();
+      lui.txid = m.get("txid").toString();
+      lui.vout = Integer.parseInt(m.get("vout").toString());
+      retval.add(lui);
+    }
+    return retval;
+  }
+
   @Override
   public String dumpPrivKey(String address) throws GenericRpcException
   {
